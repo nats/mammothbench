@@ -122,8 +122,6 @@ int main(int argc, char **argv)
 	unsigned long numblocks;
 	off64_t offset;
 
-	retval = posix_memalign(&buffer, 512, MAXBLOCKSIZE);
-	handle("posix_memalign", retval < 0);
 
 	setvbuf(stdout, NULL, _IONBF, 0);
 
@@ -139,6 +137,9 @@ int main(int argc, char **argv)
 	       filename, (long)(FILESIZE/1024/1024), TIMEOUT);
 
 	printf("\nBLKSIZE\twMB/s\trMB/s\n-------\t-----\t-----");
+
+	retval = posix_memalign(&buffer, 512, to_block_size);
+	handle("posix_memalign", retval < 0);
 
 	BLOCKSIZE = from_block_size;
 	while (BLOCKSIZE <= to_block_size) 

@@ -14,7 +14,7 @@
 
 int BLOCKSIZE;
 #define MAXBLOCKSIZE 8 * 1024 * 1024
-long FILESIZE = 512 * 1024 * 1024 ;
+long long FILESIZE = 512 * 1024 * 1024 ;
 #define FILEBLOCKS ( FILESIZE / BLOCKSIZE )
 int TIMEOUT = 5;
 
@@ -97,7 +97,7 @@ char* parse_opts(int argc, char** argv)
 				do_read_test = 0;
 				break;
 			case 's':
-				FILESIZE = atol(optarg) * 1024*1024;
+				FILESIZE = atol(optarg) * 1024*1024LL;
 				break;
 			case 'd':
 				TIMEOUT = atoi(optarg);
@@ -130,11 +130,11 @@ int main(int argc, char **argv)
 
 	char* filename = parse_opts(argc,argv);
 
-	fd = open(filename, O_RDWR | O_EXCL | O_DIRECT | O_NOATIME, S_IRUSR | S_IWUSR);
+	fd = open(filename, O_RDWR | O_EXCL | O_DIRECT | O_NOATIME | O_LARGEFILE, S_IRUSR | S_IWUSR);
 	handle("open", fd < 0);
 
-	printf("Benchmarking %s: max %ldMB or %dsec timeout\n",
-	       filename, (long)(FILESIZE/1024/1024), TIMEOUT);
+	printf("Benchmarking %s: max %lldMB or %dsec timeout\n",
+	       filename, FILESIZE/1024/1024, TIMEOUT);
 
 	printf("\nBLKSIZE\twMB/s\trMB/s\n-------\t-----\t-----");
 

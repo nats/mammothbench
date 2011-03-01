@@ -153,6 +153,9 @@ int main(int argc, char **argv)
 
 		// start writing test
 		if (do_write_test) {
+			retval = lseek(fd, 0, SEEK_SET);
+			handle("lseek",retval<0);
+
 			gettimeofday(&start,NULL);
 			srand(start.tv_sec);
 			signal(SIGALRM, &done);
@@ -178,11 +181,12 @@ int main(int argc, char **argv)
 			printf("skip\t");
 		}
 
-		retval = lseek(fd, 0, SEEK_SET);
-		handle("lseek",retval<0);
 
 		// Start reading test
 		if (do_read_test) {
+			retval = lseek(fd, 0, SEEK_SET);
+			handle("lseek",retval<0);
+
 			gettimeofday(&start,NULL);
 			srand(start.tv_sec);
 			signal(SIGALRM, &done);

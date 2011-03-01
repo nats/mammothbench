@@ -125,7 +125,7 @@ int main(int argc, char **argv)
 
 	setvbuf(stdout, NULL, _IONBF, 0);
 
-	printf("MammothBench v0.2, 2011-02-22, "
+	printf("MammothBench v0.3, 2011-03-01, "
 	       "http://www.mammothvps.com.au\n\n");
 
 	char* filename = parse_opts(argc,argv);
@@ -163,9 +163,13 @@ int main(int argc, char **argv)
 				retval = write(fd, buffer, BLOCKSIZE);
 				handle("write", retval != BLOCKSIZE);
 				count++;
+
+				// Start again to avoid over-writing
+				if (count == FILEBLOCKS) {
+					retval = lseek(fd, 0, SEEK_SET);
+					handle("lseek",retval<0);
+				}
 			}
-			retval = lseek(fd, 0, SEEK_SET);
-			handle("lseek",retval<0);
 
 			retval = fsync(fd);
 			handle("fsync",retval<0);
@@ -173,6 +177,9 @@ int main(int argc, char **argv)
 			end_writing = 1;
 			printf("skip\t");
 		}
+
+		retval = lseek(fd, 0, SEEK_SET);
+		handle("lseek",retval<0);
 
 		// Start reading test
 		if (do_read_test) {
